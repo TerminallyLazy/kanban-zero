@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Task, EnergyColumn } from '@/lib/types';
 import { api } from '@/lib/api';
 import { Column } from './Column';
+import { QuickAdd } from './QuickAdd';
 
 const COLUMNS: EnergyColumn[] = ['hyperfocus', 'quick_win', 'low_energy', 'shipped'];
 
@@ -28,6 +29,10 @@ export function Board() {
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
+
+  const handleTaskAdded = useCallback((task: Task) => {
+    setTasks((prev) => [task, ...prev]);
+  }, []);
 
   const handleShipTask = async (id: string) => {
     try {
@@ -62,19 +67,23 @@ export function Board() {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="flex gap-4 overflow-x-auto pb-4"
-    >
-      {COLUMNS.map((column) => (
-        <Column
-          key={column}
-          column={column}
-          tasks={tasksByColumn[column]}
-          onShipTask={handleShipTask}
-        />
-      ))}
-    </motion.div>
+    <div className="space-y-6">
+      <QuickAdd onTaskAdded={handleTaskAdded} />
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="flex gap-4 overflow-x-auto pb-4"
+      >
+        {COLUMNS.map((column) => (
+          <Column
+            key={column}
+            column={column}
+            tasks={tasksByColumn[column]}
+            onShipTask={handleShipTask}
+          />
+        ))}
+      </motion.div>
+    </div>
   );
 }
