@@ -8,6 +8,7 @@ from cli.kz import __version__
 from cli.kz.commands.add import add
 from cli.kz.commands.list import list_tasks
 from cli.kz.commands.ship import ship
+from cli.kz.commands.wins import wins
 
 app = typer.Typer(
     name="kz",
@@ -38,6 +39,7 @@ def main(
 app.command()(add)
 app.command("list")(list_tasks)
 app.command()(ship)
+app.command()(wins)
 
 
 if __name__ == "__main__":
