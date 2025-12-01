@@ -6,6 +6,7 @@ import { Task, EnergyColumn } from '@/lib/types';
 import { api } from '@/lib/api';
 import { Column } from './Column';
 import { QuickAdd } from './QuickAdd';
+import { Loader2 } from 'lucide-react';
 
 const COLUMNS: EnergyColumn[] = ['hyperfocus', 'quick_win', 'low_energy', 'shipped'];
 
@@ -52,36 +53,54 @@ export function Board() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <p className="text-muted-foreground">Loading tasks...</p>
-      </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="flex flex-col items-center justify-center h-96 gap-4"
+      >
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        <p className="text-muted-foreground text-lg">Loading your tasks...</p>
+      </motion.div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <p className="text-destructive">{error}</p>
-      </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="flex flex-col items-center justify-center h-96 gap-4"
+      >
+        <div className="p-6 rounded-xl bg-destructive/10 border border-destructive/20">
+          <p className="text-destructive font-semibold">{error}</p>
+        </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-8">
       <QuickAdd onTaskAdded={handleTaskAdded} />
 
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="flex gap-4 overflow-x-auto pb-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 auto-rows-fr"
       >
-        {COLUMNS.map((column) => (
-          <Column
+        {COLUMNS.map((column, index) => (
+          <motion.div
             key={column}
-            column={column}
-            tasks={tasksByColumn[column]}
-            onShipTask={handleShipTask}
-          />
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 + index * 0.05 }}
+          >
+            <Column
+              column={column}
+              tasks={tasksByColumn[column]}
+              onShipTask={handleShipTask}
+            />
+          </motion.div>
         ))}
       </motion.div>
     </div>

@@ -1,16 +1,36 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import { Board } from './components/Board';
+import { Header } from './components/Header';
+import { api } from '@/lib/api';
+import { Task } from '@/lib/types';
 
 export default function Home() {
-  return (
-    <main className="min-h-screen p-8">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold">Kanban Zero</h1>
-        <p className="text-muted-foreground">
-          AI-native, energy-aware task management
-        </p>
-      </header>
+  const [tasks, setTasks] = useState<Task[]>([]);
 
-      <Board />
-    </main>
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const data = await api.tasks.list();
+        setTasks(data);
+      } catch (e) {
+        console.error('Failed to load tasks for header:', e);
+      }
+    };
+    fetchTasks();
+
+    // Refresh tasks every 30 seconds to keep stats updated
+    const interval = setInterval(fetchTasks, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="min-h-screen">
+      <Header tasks={tasks} />
+      <main className="max-w-[2000px] mx-auto p-6">
+        <Board />
+      </main>
+    </div>
   );
 }
