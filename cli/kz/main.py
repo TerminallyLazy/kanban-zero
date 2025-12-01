@@ -5,6 +5,7 @@ from typing import Annotated, Optional
 import typer
 
 from cli.kz import __version__
+from cli.kz.commands.add import add
 
 app = typer.Typer(
     name="kz",
@@ -29,6 +30,10 @@ def main(
 ) -> None:
     """Kanban Zero - Your ADHD-friendly task companion."""
     pass
+
+
+# Register commands
+app.command()(add)
 
 
 if __name__ == "__main__":
