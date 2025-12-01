@@ -1,0 +1,20 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: kanban_zero_db
+    environment:
+      POSTGRES_USER: kz
+      POSTGRES_PASSWORD: kz_dev_password
+      POSTGRES_DB: kanban_zero
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kz -d kanban_zero"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
