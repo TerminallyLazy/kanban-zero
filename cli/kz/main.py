@@ -7,6 +7,7 @@ import typer
 from cli.kz import __version__
 from cli.kz.commands.add import add
 from cli.kz.commands.list import list_tasks
+from cli.kz.commands.ship import ship
 
 app = typer.Typer(
     name="kz",
@@ -36,6 +37,7 @@ def main(
 # Register commands
 app.command()(add)
 app.command("list")(list_tasks)
+app.command()(ship)
 
 
 if __name__ == "__main__":
